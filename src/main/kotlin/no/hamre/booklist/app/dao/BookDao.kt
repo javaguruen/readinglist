@@ -1,6 +1,6 @@
 package no.hamre.booklist.app.dao
 
-import no.hamre.booklist.app.model.Book
+import no.hamre.booklist.app.model.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
@@ -10,7 +10,11 @@ interface BookDao {
     fun findAll(): List<Book>
 }
 
+interface AuthorRepository : CrudRepository<Author, Long>
 interface BookRepository : CrudRepository<Book, Long>
+interface TagRepository : CrudRepository<Tag, String>
+interface TaggingRepository : CrudRepository<Tagging, Long>
+interface UserRepository : CrudRepository<User, Long>
 
 @Repository
 open class BookDaoImpl(@Autowired val repository: BookRepository)
