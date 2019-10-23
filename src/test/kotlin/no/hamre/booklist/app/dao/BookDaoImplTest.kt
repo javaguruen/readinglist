@@ -14,13 +14,20 @@ internal class BookDaoImplTest(
   @Autowired val dataSource: DataSource,
   @Autowired val jdbcTemplate: JdbcTemplate,
   @Autowired val entityManager: EntityManager,
-  @Autowired val userRepository: TagRepository){
+  @Autowired val tagRepository: TagRepository){
 
   @Test
   fun injectedComponentsAreNotNull() {
     assertNotNull(dataSource)
     assertNotNull(jdbcTemplate)
     assertNotNull(entityManager)
-    assertNotNull(userRepository)
+    assertNotNull(tagRepository)
+  }
+
+  @Test
+  internal fun findById() {
+    val boughtTag = tagRepository.findById("BOUGHT")
+    assertNotNull(boughtTag)
+
   }
 }

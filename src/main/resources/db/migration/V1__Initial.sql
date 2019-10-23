@@ -42,9 +42,9 @@ CREATE TABLE tagging
     PRIMARY KEY(user_id, book_id, tag_name)
 );
 
-CREATE TABLE author_book
+CREATE TABLE book_authors
 (
-    book_id int NOT NULL REFERENCES book(id),
-    author_id int NOT NULL references author(id),
-    PRIMARY KEY (book_id, author_id)
+    books_id int NOT NULL REFERENCES book(id),
+    authors_id int NOT NULL references author(id),
+    PRIMARY KEY (books_id, authors_id)
 )

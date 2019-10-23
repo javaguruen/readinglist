@@ -23,11 +23,11 @@ VALUES ('BOUGHT', 1, 1);
 INSERT INTO tagging(tag_name, user_id, book_id)
 VALUES ('WISH_LIST', 1, 2);
 
-INSERT INTO author_book(book_id, author_id)
+INSERT INTO book_authors(books_id, authors_id)
 VALUES (1, 1);
 
-INSERT INTO author_book(book_id, author_id)
+INSERT INTO book_authors(books_id, authors_id)
 VALUES (1, 2);
 
-INSERT INTO author_book(book_id, author_id)
+INSERT INTO book_authors(books_id, authors_id)
 VALUES (2, 1);

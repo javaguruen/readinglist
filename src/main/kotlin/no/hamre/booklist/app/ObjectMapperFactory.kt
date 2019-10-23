@@ -9,7 +9,7 @@ object ObjectMapperFactory {
 
     fun configure(objectMapper: ObjectMapper): ObjectMapper {
         objectMapper.registerModule(KotlinModule())
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
         //objectMapper.disable(WRITE)
         return objectMapper
     }
