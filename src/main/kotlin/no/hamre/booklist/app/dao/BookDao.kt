@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 interface BookDao {
-  fun insert(book: Book): Long
+  fun insert(book: Book): Book
   fun findAll(): List<Book>
 }
 
@@ -17,13 +17,12 @@ interface TaggingRepository : CrudRepository<Tagging, Long>
 interface UserRepository : CrudRepository<User, Long>
 
 @Repository
-open class BookDaoImpl(@Autowired val repository: BookRepository)
+class BookDaoImpl(@Autowired val repository: BookRepository)
   : BookDao {
 
   override
-  fun insert(book: Book): Long {
-    val persistedBook = repository.save(book)
-    return persistedBook.id!!
+  fun insert(book: Book): Book {
+    return repository.save(book)
   }
 
   override fun findAll(): List<Book> {

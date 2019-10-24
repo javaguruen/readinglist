@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
 interface BookService{
-    fun addBook(book: Book): Long
+    fun addBook(book: Book): Book
     fun listBooks(): List<Book>
 }
 
@@ -17,7 +17,7 @@ class BookServiceImpl @Autowired constructor(val dao: BookDao)
     : BookService {
 
     override
-    fun addBook(book: Book): Long {
+    fun addBook(book: Book): Book {
         return dao.insert(book)
     }
 
