@@ -2,6 +2,9 @@ package no.hamre.booklist.app.model
 
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.persistence.FetchType
+
+
 
 @Entity
 data class Book(
@@ -14,7 +17,7 @@ data class Book(
 
     val norwegianTitle: String? = null,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
 /*
     @JoinTable(
         name = "author_book",

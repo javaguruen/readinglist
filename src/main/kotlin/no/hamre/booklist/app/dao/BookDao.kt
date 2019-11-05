@@ -17,11 +17,12 @@ interface TaggingRepository : CrudRepository<Tagging, Long>
 interface UserRepository : CrudRepository<User, Long>
 
 @Repository
-class BookDaoImpl(@Autowired val repository: BookRepository)
+class BookDaoImpl(@Autowired val repository: BookRepository, @Autowired val authorRepository: AuthorRepository)
   : BookDao {
 
   override
   fun insert(book: Book): Book {
+//    book.copy( authors = book.authors.map { authorRepository.save(it) }.toSet() )
     return repository.save(book)
   }
 

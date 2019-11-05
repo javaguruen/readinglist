@@ -22,7 +22,7 @@ class BookController @Autowired constructor(val bookService: BookService) {
 
   @POST
   fun addBook(@Valid book: Book): Response {
-      val modelBook = bookService.addBook(no.hamre.booklist.app.model.Book(originalTitle = book.originalTitle))
+      val modelBook = bookService.addBook( Api2ModelMapper.mapBook(book) )
     return Response
         .status(CREATED)
         .entity( Model2ApiMapper.mapBook(modelBook) ).build()
@@ -35,6 +35,23 @@ class BookController @Autowired constructor(val bookService: BookService) {
         .build()
   }
 }
+object Api2ModelMapper{
+  fun mapBook(book: Book): modelBook {
+    return modelBook(
+        id = book.id,
+        originalTitle = book.originalTitle,
+        authors = mapAuthors(book.authors)
+    )
+  }
+  fun mapAuthors(authors: List<Author>): Set<modelAuthor> {
+    return authors.map { mapAuthor(it) }.toSet()
+  }
+
+  fun mapAuthor(author: Author): modelAuthor {
+    return modelAuthor(id = author.id, firstName = author.firstName, lastName = author.lastName)
+  }
+}
+
 
 object Model2ApiMapper {
   fun mapBooks(books: List<modelBook>): List<Book> {

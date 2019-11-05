@@ -46,6 +46,7 @@ class BookControllerIntTest {
     assertEquals(HttpStatus.CREATED, result.statusCode)
     val book = result.body
     assertNotNull(book)
+    assertEquals(1, book?.authors?.size, "Should have one author")
     assertEquals("Carrie", book?.originalTitle)
   }
 }
