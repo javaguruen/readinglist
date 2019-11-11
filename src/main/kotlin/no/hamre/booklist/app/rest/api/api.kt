@@ -8,7 +8,7 @@ data class Book(
     val originalTitle: String,
     val norwegianTitle: String? = null,
     val language: String? = null,
-    val tags: List<Tag> = emptyList(),
+    val tags: Set<Tag> = emptySet(),
     val readingOrder: Int = 0,
     val medium: Medium? = null,
     val link: String? = null

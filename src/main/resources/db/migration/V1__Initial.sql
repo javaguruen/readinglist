@@ -33,13 +33,13 @@ CREATE TABLE book
     reading_order numeric(7) DEFAULT 0 NOT NULL
 );
 
-CREATE TABLE tagging
+CREATE TABLE book_tag
 (
     tag_name    character varying(128) NOT NULL REFERENCES tag(name),
-    user_id int NOT NULL REFERENCES users(id),
+ --   user_id int NOT NULL REFERENCES users(id),
     book_id int NOT NULL REFERENCES book(id),
-    tagged timestamp NOT NULL DEFAULT current_timestamp,
-    PRIMARY KEY(user_id, book_id, tag_name)
+ --   tagged timestamp NOT NULL DEFAULT current_timestamp,
+    PRIMARY KEY(book_id, tag_name)
 );
 
 CREATE TABLE book_authors

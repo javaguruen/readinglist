@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>no.hamre.booklist</groupId>
-    <artifactId>app</artifactId>
+    <artifactId>readinglist</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>app</name>
     <description>Readinglist for books</description>
