@@ -11,7 +11,7 @@
     <groupId>no.hamre.booklist</groupId>
     <artifactId>readinglist</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>app</name>
+    <name>Readinglist</name>
     <description>Readinglist for books</description>
 
     <properties>

@@ -27,6 +27,7 @@ class BookControllerIntTest {
     val books = result.body
     assertEquals(2, books?.size)
     assertEquals("The Shining", books?.first()?.originalTitle)
+    books?.forEach { println(it) }
   }
 
   @Test

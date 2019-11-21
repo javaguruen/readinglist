@@ -23,10 +23,10 @@ import no.hamre.booklist.app.model.Tag as ModelTag
 class BookController @Autowired constructor(val bookService: BookService) {
 
   @POST
-  fun addBook(bookS: String): Response {
-//  fun addBook(@Valid book: Book): Response {
-    println("Book $bookS")
-    val book = ObjectMapperFactory.create().readValue(bookS, Book::class.java)
+//  fun addBook(bookS: String): Response {
+  fun addBook(@Valid book: Book): Response {
+    println("Book $book")
+    //val book = ObjectMapperFactory.create().readValue(bookS, Book::class.java)
     val modelBook = bookService.addBook(Api2ModelMapper.mapBook(book))
     return Response
         .status(CREATED)

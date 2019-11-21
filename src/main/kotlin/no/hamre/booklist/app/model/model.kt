@@ -16,11 +16,17 @@ data class Book(
 
     val norwegianTitle: String? = null,
 
+/*
     @ManyToMany(fetch = FetchType.LAZY,
         cascade = [
           CascadeType.PERSIST,
           CascadeType.MERGE
         ])
+    @JoinTable(name = "book_tag",
+        joinColumns = [JoinColumn(name = "book_id")],
+        inverseJoinColumns = [JoinColumn(name = "tag_name")])
+*/
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.PERSIST])
     @JoinTable(name = "book_tag",
         joinColumns = [JoinColumn(name = "book_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_name")])
