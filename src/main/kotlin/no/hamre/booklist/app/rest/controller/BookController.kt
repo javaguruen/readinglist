@@ -1,6 +1,6 @@
 package no.hamre.booklist.app.rest.controller
 
-import no.hamre.booklist.app.ObjectMapperFactory
+import io.swagger.annotations.Api
 import no.hamre.booklist.app.rest.api.*
 import no.hamre.booklist.app.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,14 +16,14 @@ import no.hamre.booklist.app.model.Book as ModelBook
 import no.hamre.booklist.app.model.Medium as ModelMedium
 import no.hamre.booklist.app.model.Tag as ModelTag
 
-@Path("/api/v1/books")
+@Path("/v1/books")
 @Produces(APPLICATION_JSON)
-@Consumes(APPLICATION_JSON)
+//@Consumes(APPLICATION_JSON)
 @Controller
+@Api
 class BookController @Autowired constructor(val bookService: BookService) {
 
   @POST
-//  fun addBook(bookS: String): Response {
   fun addBook(@Valid book: Book): Response {
     println("Book $book")
     //val book = ObjectMapperFactory.create().readValue(bookS, Book::class.java)

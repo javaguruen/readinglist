@@ -1,8 +1,6 @@
 package no.hamre.booklist.app
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.hamre.booklist.app.rest.controller.BookController
-import org.glassfish.jersey.server.ResourceConfig
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -10,8 +8,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.springframework.http.HttpMethod
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -21,7 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @SpringBootApplication
-open class AppApplication : SpringBootServletInitializer() {
+class AppApplication : SpringBootServletInitializer() {
 }
 
 fun main(args: Array<String>) {
@@ -30,13 +26,15 @@ fun main(args: Array<String>) {
 
 val log = LoggerFactory.getLogger(AppApplication::class.java)
 
-@Configuration
+//@Configuration
+/*
 open class JerseyConfig() : ResourceConfig() {
     init {
         log.info("Register Controllers")
         register(BookController::class.java)
     }
 }
+*/
 
 @Configuration
 open class ObjectMapperFactoryBean {

@@ -1,10 +1,13 @@
 package no.hamre.booklist.app.rest.api
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
 
 data class Book(
     val id: Long? = null,
     val authors: List<Author>,
+    @ApiModelProperty(required = true)
     val originalTitle: String,
     val norwegianTitle: String? = null,
     val language: String? = null,
