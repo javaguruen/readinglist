@@ -1,6 +1,7 @@
 package no.hamre.booklist.app.rest.controller
 
 import io.swagger.annotations.Api
+import no.hamre.booklist.app.log
 import no.hamre.booklist.app.rest.api.*
 import no.hamre.booklist.app.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller
 import javax.validation.Valid
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
+import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.Response.Status.CREATED
 import javax.ws.rs.core.Response.ok
@@ -22,6 +24,15 @@ import no.hamre.booklist.app.model.Tag as ModelTag
 @Controller
 @Api
 class BookController @Autowired constructor(val bookService: BookService) {
+
+  @POST
+  @Path("/raw")
+  @Produces(TEXT_PLAIN)
+  fun addRawTextAsBody( body: String): Response {
+    log.info("Received body: $body")
+    val newId = bookService.addRawBookInfo(body)
+    return ok("New id is $newId").build()
+  }
 
   @POST
   fun addBook(@Valid book: Book): Response {

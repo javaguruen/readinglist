@@ -47,4 +47,11 @@ CREATE TABLE book_authors
     books_id int NOT NULL REFERENCES book(id),
     authors_id int NOT NULL references author(id),
     PRIMARY KEY (books_id, authors_id)
-)
+);
+
+CREATE TABLE raw_book_info(
+    id serial NOT NULL PRIMARY KEY,
+    data character varying(256) NOT NULL,
+    created timestamp NOT NULL default current_timestamp,
+    converted timestamp default null
+);

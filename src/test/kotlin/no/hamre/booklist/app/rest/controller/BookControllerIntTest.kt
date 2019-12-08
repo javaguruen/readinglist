@@ -1,6 +1,5 @@
 package no.hamre.booklist.app.rest.controller
 
-import com.fasterxml.jackson.databind.JsonNode
 import no.hamre.booklist.app.ObjectMapperFactory
 import no.hamre.booklist.app.rest.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -9,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,7 +39,7 @@ class BookControllerIntTest {
         readingOrder = 0,
         tags = setOf(
             Tag(TagName("Read")), Tag(TagName("Horror")))
-        )
+    )
 
     val resultStatus = testRestTemplate
         .postForEntity(
@@ -65,7 +62,21 @@ class BookControllerIntTest {
     assertEquals(requestBook.medium, book?.medium, "Medium")
     assertEquals(requestBook.readingOrder, book?.readingOrder, "Reading order")
     assertEquals(2, requestBook.tags.size, "Tag size")
-    assertTrue(requestBook.tags.any { it.name.name == "Read" }, "Tag: Read" )
-    assertTrue(requestBook.tags.any { it.name.name == "Horror" } , "Tag: Horror")
+    assertTrue(requestBook.tags.any { it.name.name == "Read" }, "Tag: Read")
+    assertTrue(requestBook.tags.any { it.name.name == "Horror" }, "Tag: Horror")
+  }
+
+  @Test
+  fun `Add raw information about a book`() {
+    val resultStatus = testRestTemplate
+        .postForEntity(
+            "/api/v1/books/raw",
+            "A raw string",
+            String::class.java
+        )
+    assertNotNull(resultStatus)
+    assertEquals(HttpStatus.OK, resultStatus.statusCode)
+    val response = resultStatus.body
+    assertNotNull(response)
   }
 }

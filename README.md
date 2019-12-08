@@ -11,3 +11,12 @@ https://github.com/brightzheng100/springboot-jersey-swagger
 
 
 https://reflectoring.io/spring-boot-data-jpa-test/
+
+
+Swagger.ui: 
+http://localhost:8080/
+
+swagger.json:
+http://localhost:8080/api/swagger.json
+
+
