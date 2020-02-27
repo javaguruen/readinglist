@@ -4,6 +4,7 @@ import io.swagger.jaxrs.config.BeanConfig
 import io.swagger.jaxrs.listing.ApiListingResource
 import io.swagger.jaxrs.listing.SwaggerSerializers
 import no.hamre.booklist.app.rest.controller.BookController
+import no.hamre.booklist.app.rest.controller.HelloController
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.wadl.internal.WadlResource
 import org.springframework.beans.factory.annotation.Value
@@ -27,6 +28,7 @@ class JerseyConfig(
 
     private fun registerEndpoints() {
       this.register(BookController::class.java)
+      this.register(HelloController::class.java)
       this.register(WadlResource::class.java)
     }
 

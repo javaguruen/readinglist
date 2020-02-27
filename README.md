@@ -20,3 +20,9 @@ swagger.json:
 http://localhost:8080/api/swagger.json
 
 
+## Run locally
+### Maven with profile:
+`mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+
+### Java -jar
+` java  -jar target/readinglist-0.0.1-SNAPSHOT.jar --spring.profiles.active=production`
