@@ -8,23 +8,27 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @SpringBootApplication
+@EnableWebSecurity
 class AppApplication : SpringBootServletInitializer() {
 }
+    fun main(args: Array<String>) {
+        runApplication<AppApplication>(*args)
+    }
 
-fun main(args: Array<String>) {
-    runApplication<AppApplication>(*args)
-}
-
-val log = LoggerFactory.getLogger(AppApplication::class.java)
+    val log = LoggerFactory.getLogger(AppApplication::class.java)
 
 //@Configuration
 /*
@@ -37,38 +41,74 @@ open class JerseyConfig() : ResourceConfig() {
 */
 
 @Configuration
-open class ObjectMapperFactoryBean {
+class ObjectMapperFactoryBean {
 
     @Bean
     @Primary
-    open fun springObjectMapperConfiguration(): ObjectMapper {
+    fun springObjectMapperConfiguration(): ObjectMapper {
         log.info("Configure Spring's ObjectMapper")
         return ObjectMapperFactory.create()
     }
 }
-
-
+/*
 @EnableWebSecurity
-open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+@Configuration
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.cors().and().csrf().disable()
+        //http.cors().and().csrf().disable()
+        http
+            .authorizeRequests()
+            .antMatchers("/").access("hasRole('READER')")
+            .antMatchers("/").permitAll()
+
+            .and()
+
+            .formLogin()
+            .loginPage("/login")
+            .failureUrl("/login?error=true")
+    }
+
+    data class MyUserDetails(val uname: String, val pwd: String) : UserDetails {
+        override fun isEnabled(): Boolean = true
+        override fun isAccountNonExpired() = true
+        override fun isAccountNonLocked() = true
+        override fun isCredentialsNonExpired() = true
+        override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getUsername(): String {
+            return uname
+        }
+
+        override fun getPassword(): String {
+            return pwd
+        }
+    }
+
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth
+            .userDetailsService(UserDetailsService() { un ->
+                MyUserDetails(un, "pwd2")
+            })
     }
 
     @Bean
-    open fun corsConfigurationSource(): CorsConfigurationSource {
+    fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.allowedOrigins = listOf("*")
         configuration.allowedMethods = listOf("*")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
         val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
+        source.registerCorsConfiguration("/2x*", configuration)
         return source
     }
 
 }
+*/
 
 /*
 

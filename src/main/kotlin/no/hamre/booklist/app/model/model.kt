@@ -1,8 +1,10 @@
 package no.hamre.booklist.app.model
 
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 import javax.persistence.*
-import javax.persistence.FetchType
 
 
 @Entity
@@ -123,7 +125,23 @@ data class User(
     val hashedPassword: String,
 
     val deleted: LocalDateTime?
-)
+) : UserDetails {
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return mutableListOf(SimpleGrantedAuthority("READER"))
+    }
+
+    override fun isEnabled() = deleted != null
+
+    override fun getUsername() = email
+
+    override fun isCredentialsNonExpired() = isEnabled
+
+    override fun getPassword() = hashedPassword
+
+    override fun isAccountNonExpired() = isEnabled
+
+    override fun isAccountNonLocked() = isEnabled
+}
 
 @Entity
 data class Tag(
