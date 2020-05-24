@@ -1,13 +1,16 @@
 package no.hamre.booklist.app.rest.api
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
+@Schema(
+    requiredProperties = ["stat"],
+    implementation = Book::class
+)
 data class Book(
     val id: Long? = null,
+    @field:Schema(required = true)
     val authors: List<Author>,
-    @ApiModelProperty(required = true)
     val originalTitle: String,
     val norwegianTitle: String? = null,
     val language: String? = null,
@@ -15,12 +18,11 @@ data class Book(
     val readingOrder: Int = 0,
     val medium: Medium? = null,
     val link: String? = null,
-    @ApiModelProperty(required = true)
     val stat: Status = Status.ON_LIST
 )
-@ApiModel(description = "UNREAD: Not read yet")
+@Schema(description = "UNREAD: Not read yet")
 enum class Status {
-    @ApiModelProperty("Not read yet", example = "UNREAD: not read") UNREAD,
+    @field:Schema(description = "Not read yet", example = "UNREAD: not read") UNREAD,
     READ,
     ON_LIST, WONT_READ }
 data class Author(val id: Long? = null, val firstName: String, val lastName: String,

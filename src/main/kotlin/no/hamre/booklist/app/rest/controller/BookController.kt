@@ -1,6 +1,5 @@
 package no.hamre.booklist.app.rest.controller
 
-import io.swagger.annotations.Api
 import no.hamre.booklist.app.log
 import no.hamre.booklist.app.rest.api.*
 import no.hamre.booklist.app.service.BookService
@@ -20,9 +19,7 @@ import no.hamre.booklist.app.model.Tag as ModelTag
 
 @Path("/v1/books")
 @Produces(APPLICATION_JSON)
-//@Consumes(APPLICATION_JSON)
 @Controller
-@Api
 class BookController @Autowired constructor(val bookService: BookService) {
 
   @POST

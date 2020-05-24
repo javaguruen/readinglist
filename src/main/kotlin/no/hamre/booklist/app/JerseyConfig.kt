@@ -1,8 +1,6 @@
 package no.hamre.booklist.app
 
-import io.swagger.jaxrs.config.BeanConfig
-import io.swagger.jaxrs.listing.ApiListingResource
-import io.swagger.jaxrs.listing.SwaggerSerializers
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource
 import no.hamre.booklist.app.rest.controller.BookController
 import no.hamre.booklist.app.rest.controller.HelloController
 import org.glassfish.jersey.server.ResourceConfig
@@ -33,6 +31,9 @@ class JerseyConfig(
     }
 
     private fun configureSwagger() {
+      val openApiResource = OpenApiResource()
+      register(openApiResource)
+     /*
       this.register(ApiListingResource::class.java)
       this.register(SwaggerSerializers::class.java)
       val config = BeanConfig()
@@ -44,5 +45,6 @@ class JerseyConfig(
       config.resourcePackage = "no.hamre.booklist.app.rest.controller"
       config.prettyPrint = true
       config.scan = true
+    */
     }
  }
