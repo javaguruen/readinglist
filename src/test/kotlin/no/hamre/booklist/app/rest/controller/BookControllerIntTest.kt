@@ -10,15 +10,21 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 
+
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookControllerIntTest {
   @Autowired
   lateinit var testRestTemplate: TestRestTemplate
 
+  private val userName = "user"
+  private val password = "pwd"
+
   @Test
   fun `Get all books`() {
-    val result = testRestTemplate.getForEntity("/api/v1/books", Array<Book>::class.java)
+    val result = testRestTemplate
+        .withBasicAuth(userName, password)
+        .getForEntity("/api/v1/books", Array<Book>::class.java)
     assertNotNull(result)
     assertEquals(HttpStatus.OK, result.statusCode)
     val books = result.body
@@ -42,6 +48,7 @@ class BookControllerIntTest {
     )
 
     val resultStatus = testRestTemplate
+        .withBasicAuth(userName, password)
         .postForEntity(
             "/api/v1/books",
             requestBook,
@@ -69,6 +76,7 @@ class BookControllerIntTest {
   @Test
   fun `Add raw information about a book`() {
     val resultStatus = testRestTemplate
+        .withBasicAuth(userName, password)
         .postForEntity(
             "/api/v1/books/raw",
             "A raw string",
@@ -79,4 +87,5 @@ class BookControllerIntTest {
     val response = resultStatus.body
     assertNotNull(response)
   }
+
 }

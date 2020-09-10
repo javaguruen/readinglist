@@ -1,12 +1,21 @@
 package no.hamre.booklist.app.rest.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import no.hamre.booklist.app.log
 import no.hamre.booklist.app.rest.api.*
 import no.hamre.booklist.app.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import javax.validation.Valid
-import javax.ws.rs.*
+import javax.ws.rs.GET
+import javax.ws.rs.POST
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType.APPLICATION_JSON
 import javax.ws.rs.core.MediaType.TEXT_PLAIN
 import javax.ws.rs.core.Response
@@ -25,103 +34,36 @@ class BookController @Autowired constructor(val bookService: BookService) {
   @POST
   @Path("/raw")
   @Produces(TEXT_PLAIN)
-  fun addRawTextAsBody( body: String): Response {
+  fun addRawTextAsBody(body: String): Response {
     log.info("Received body: $body")
     val newId = bookService.addRawBookInfo(body)
     return ok("New id is $newId").build()
   }
 
   @POST
+  @Operation(summary = "Add a book", description = "Add a new book.")
+  // Please Note: Repeatable Annotations with non-SOURCE retentions are not yet supported with Kotlin so we are using `@ApiResponses`
+  // instead of `@ApiResponse`, see https://youtrack.jetbrains.com/issue/KT-12794
+  @ApiResponses(
+      ApiResponse(content = [Content(mediaType = "application/json", schema = Schema(type = "string"))]),
+      ApiResponse(responseCode = "400", description = "Invalid book"),
+      ApiResponse(responseCode = "404", description = "Person not found")
+  )
+  @Tag(name = "books")
   fun addBook(@Valid book: Book): Response {
     println("Book $book")
     //val book = ObjectMapperFactory.create().readValue(bookS, Book::class.java)
-    val modelBook = bookService.addBook(Api2ModelMapper.mapBook(book))
+    val modelBook = bookService.addBook(ApiToDomainMapper.mapBook(book))
     return Response
         .status(CREATED)
-        .entity(Model2ApiMapper.mapBook(modelBook))
+        .entity(DomainToApiMapper.mapBook(modelBook))
         .build()
   }
 
   @GET
   fun listBooks(): Response {
     val modelBooks = bookService.listBooks()
-    return ok(Model2ApiMapper.mapBooks(modelBooks))
+    return ok(DomainToApiMapper.mapBooks(modelBooks))
         .build()
-  }
-}
-
-object Api2ModelMapper {
-  fun mapBook(book: Book): ModelBook {
-    return ModelBook(
-        id = book.id,
-        originalTitle = book.originalTitle,
-        norwegianTitle = book.norwegianTitle,
-        authors = mapAuthors(book.authors),
-        readingOrder = book.readingOrder,
-        medium = mapMedium(book.medium),
-        language = book.language,
-        tags = mapTags(book.tags)
-        )
-  }
-
-  private fun mapTags(tags: Set<Tag>): Set<ModelTag> {
-    return tags.map { t -> ModelTag(t.name.name, setOf()) }.toSet()
-  }
-
-  private fun mapMedium(medium: Medium?): ModelMedium? {
-    return when (medium) {
-      null -> null
-      Medium.PAPIR -> ModelMedium.PAPIR
-      Medium.LYDBOK -> ModelMedium.LYDBOK
-      Medium.EBOK -> ModelMedium.EBOK
-    }
-  }
-
-  fun mapAuthors(authors: List<Author>): Set<ModelAuthor> {
-    return authors.map { mapAuthor(it) }.toSet()
-  }
-
-  fun mapAuthor(author: Author): ModelAuthor {
-    return ModelAuthor(id = author.id, firstName = author.firstName, lastName = author.lastName)
-  }
-}
-
-
-object Model2ApiMapper {
-  fun mapBooks(books: List<ModelBook>): List<Book> {
-    return books.map { mapBook(it) }
-  }
-
-  fun mapBook(book: ModelBook): Book {
-    return Book(
-        id = book.id,
-        authors = book.authors.map { mapAuthor(it) },
-        originalTitle = book.originalTitle,
-        norwegianTitle = book.norwegianTitle,
-        language = book.language,
-        link = null,
-        medium = mapMedium(book.medium),
-        tags = mapTags(book.tags)
-    )
-  }
-
-  private fun mapMedium(medium: ModelMedium?): Medium? {
-    return when (medium) {
-      null -> null
-      ModelMedium.PAPIR -> Medium.PAPIR
-      ModelMedium.LYDBOK -> Medium.LYDBOK
-      ModelMedium.EBOK -> Medium.EBOK
-    }
-
-  }
-
-  private fun mapTags(tags: Set<ModelTag>): Set<Tag> {
-    return tags.map { t -> Tag( TagName( name = t.name) ) }.toSet()
-  }
-
-  fun mapAuthor(author: ModelAuthor): Author {
-    return Author(id = author.id,
-        firstName = author.firstName,
-        lastName = author.lastName)
   }
 }

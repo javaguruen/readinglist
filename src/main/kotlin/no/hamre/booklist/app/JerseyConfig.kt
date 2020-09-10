@@ -1,6 +1,8 @@
 package no.hamre.booklist.app
 
-import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource
+import io.swagger.jaxrs.config.BeanConfig
+import io.swagger.jaxrs.listing.ApiListingResource
+import io.swagger.jaxrs.listing.SwaggerSerializers
 import no.hamre.booklist.app.rest.controller.BookController
 import no.hamre.booklist.app.rest.controller.HelloController
 import org.glassfish.jersey.server.ResourceConfig
@@ -27,12 +29,25 @@ class JerseyConfig(
     private fun registerEndpoints() {
       this.register(BookController::class.java)
       this.register(HelloController::class.java)
-      this.register(WadlResource::class.java)
+      //this.register(WadlResource::class.java)
     }
 
     private fun configureSwagger() {
-      val openApiResource = OpenApiResource()
-      register(openApiResource)
+      register(ApiListingResource::class.java)
+      register(SwaggerSerializers::class.java)
+      register(WadlResource::class.java)
+      val config = BeanConfig()
+      config.title = "ImageClient Tutorial API"
+      config.host = "localhost:8080"
+      config.version = "v1"
+      config.contact = "Joe Programmer"
+      config.schemes = arrayOf("http", "https")
+      config.basePath = "/imageclient"
+      config.resourcePackage = "com.bts.imageclient.rest.api.controller"
+      config.prettyPrint = true
+      config.scan = true
+      //val openApiResource = OpenApiResource()
+      //register(openApiResource)
      /*
       this.register(ApiListingResource::class.java)
       this.register(SwaggerSerializers::class.java)
