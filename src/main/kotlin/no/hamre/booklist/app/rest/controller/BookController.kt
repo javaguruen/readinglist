@@ -1,130 +1,76 @@
 package no.hamre.booklist.app.rest.controller
 
-import io.swagger.annotations.Api
-import no.hamre.booklist.app.log
-import no.hamre.booklist.app.rest.api.*
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import no.hamre.booklist.app.rest.api.Api2ModelMapper
+import no.hamre.booklist.app.rest.api.Book
+import no.hamre.booklist.app.rest.api.Model2ApiMapper
 import no.hamre.booklist.app.service.BookService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Controller
+import org.springframework.http.MediaType.*
+import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.created
+import org.springframework.http.ResponseEntity.ok
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod.GET
+import org.springframework.web.bind.annotation.RequestMethod.POST
+import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 import javax.validation.Valid
-import javax.ws.rs.*
-import javax.ws.rs.core.MediaType.APPLICATION_JSON
-import javax.ws.rs.core.MediaType.TEXT_PLAIN
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.CREATED
-import javax.ws.rs.core.Response.ok
-import no.hamre.booklist.app.model.Author as ModelAuthor
-import no.hamre.booklist.app.model.Book as ModelBook
-import no.hamre.booklist.app.model.Medium as ModelMedium
-import no.hamre.booklist.app.model.Tag as ModelTag
+import javax.validation.constraints.NotEmpty
 
-@Path("/v1/books")
-@Produces(APPLICATION_JSON)
-//@Consumes(APPLICATION_JSON)
-@Controller
-@Api
+@RequestMapping(path = ["/api/v1/books"], produces = [APPLICATION_JSON_VALUE])
+@RestController
 class BookController @Autowired constructor(val bookService: BookService) {
+  private val baseUrl = "http://localhost:8080/api/v1/books"
 
+/*
   @POST
   @Path("/raw")
   @Produces(TEXT_PLAIN)
-  fun addRawTextAsBody( body: String): Response {
-    log.info("Received body: $body")
-    val newId = bookService.addRawBookInfo(body)
-    return ok("New id is $newId").build()
+*/
+
+  @RequestMapping(path = ["/raw"], method = [POST], consumes = [TEXT_PLAIN_VALUE], produces = [TEXT_PLAIN_VALUE])
+  @Operation(
+      security = [
+        SecurityRequirement(name = "bearerToken", scopes = ["book.write"])
+      ]
+  )
+  @ApiResponses(value = [
+    ApiResponse(responseCode = "201", description = "Successfully persisted.",
+        content = [Content(schema = Schema(implementation = Long::class))])
+  ])
+  fun addRawTextAsBody(@RequestBody body: String?): ResponseEntity<Long> {
+    log.info("Received raw body: $body")
+    val newId: Long = bookService.addRawBookInfo(body!!)
+    return created(URI("$baseUrl/raw/$newId"))
+        .contentType(TEXT_PLAIN)
+        .body(newId as kotlin.Long)
   }
 
-  @POST
-  fun addBook(@Valid book: Book): Response {
-    println("Book $book")
-    //val book = ObjectMapperFactory.create().readValue(bookS, Book::class.java)
+  @RequestMapping(method = [POST])
+  fun addBook(@RequestBody @Valid book: Book): ResponseEntity<Book> {
+    log.info("Add book $book")
     val modelBook = bookService.addBook(Api2ModelMapper.mapBook(book))
-    return Response
-        .status(CREATED)
-        .entity(Model2ApiMapper.mapBook(modelBook))
-        .build()
+    return created(URI("$baseUrl/"))
+        .body(Model2ApiMapper.mapBook(modelBook))
   }
 
-  @GET
-  fun listBooks(): Response {
+  @RequestMapping(method = [GET], path = ["/"], produces = [APPLICATION_JSON_VALUE])
+  fun listBooks(): ResponseEntity<Array<Book>> {
     val modelBooks = bookService.listBooks()
+    //modelBooks.forEach { println(it) }
     return ok(Model2ApiMapper.mapBooks(modelBooks))
-        .build()
-  }
-}
-
-object Api2ModelMapper {
-  fun mapBook(book: Book): ModelBook {
-    return ModelBook(
-        id = book.id,
-        originalTitle = book.originalTitle,
-        norwegianTitle = book.norwegianTitle,
-        authors = mapAuthors(book.authors),
-        readingOrder = book.readingOrder,
-        medium = mapMedium(book.medium),
-        language = book.language,
-        tags = mapTags(book.tags)
-        )
   }
 
-  private fun mapTags(tags: Set<Tag>): Set<ModelTag> {
-    return tags.map { t -> ModelTag(t.name.name, setOf()) }.toSet()
-  }
-
-  private fun mapMedium(medium: Medium?): ModelMedium? {
-    return when (medium) {
-      null -> null
-      Medium.PAPIR -> ModelMedium.PAPIR
-      Medium.LYDBOK -> ModelMedium.LYDBOK
-      Medium.EBOK -> ModelMedium.EBOK
-    }
-  }
-
-  fun mapAuthors(authors: List<Author>): Set<ModelAuthor> {
-    return authors.map { mapAuthor(it) }.toSet()
-  }
-
-  fun mapAuthor(author: Author): ModelAuthor {
-    return ModelAuthor(id = author.id, firstName = author.firstName, lastName = author.lastName)
-  }
-}
-
-
-object Model2ApiMapper {
-  fun mapBooks(books: List<ModelBook>): List<Book> {
-    return books.map { mapBook(it) }
-  }
-
-  fun mapBook(book: ModelBook): Book {
-    return Book(
-        id = book.id,
-        authors = book.authors.map { mapAuthor(it) },
-        originalTitle = book.originalTitle,
-        norwegianTitle = book.norwegianTitle,
-        language = book.language,
-        link = null,
-        medium = mapMedium(book.medium),
-        tags = mapTags(book.tags)
-    )
-  }
-
-  private fun mapMedium(medium: ModelMedium?): Medium? {
-    return when (medium) {
-      null -> null
-      ModelMedium.PAPIR -> Medium.PAPIR
-      ModelMedium.LYDBOK -> Medium.LYDBOK
-      ModelMedium.EBOK -> Medium.EBOK
-    }
-
-  }
-
-  private fun mapTags(tags: Set<ModelTag>): Set<Tag> {
-    return tags.map { t -> Tag( TagName( name = t.name) ) }.toSet()
-  }
-
-  fun mapAuthor(author: ModelAuthor): Author {
-    return Author(id = author.id,
-        firstName = author.firstName,
-        lastName = author.lastName)
+  companion object {
+    private val log: Logger = LoggerFactory.getLogger(BookController::class.java)
   }
 }

@@ -9,6 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
+import org.springframework.http.HttpStatus.CREATED
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -18,9 +20,10 @@ class BookControllerIntTest {
 
   @Test
   fun `Get all books`() {
-    val result = testRestTemplate.getForEntity("/api/v1/books", Array<Book>::class.java)
+    val result = testRestTemplate.getForEntity("/api/v1/books/", Array<Book>::class.java)
+    assertEquals(OK, result.statusCode)
     assertNotNull(result)
-    assertEquals(HttpStatus.OK, result.statusCode)
+    assertEquals(OK, result.statusCode)
     val books = result.body
     assertEquals(2, books?.size)
     assertEquals("The Shining", books?.first()?.originalTitle)
@@ -75,7 +78,7 @@ class BookControllerIntTest {
             String::class.java
         )
     assertNotNull(resultStatus)
-    assertEquals(HttpStatus.OK, resultStatus.statusCode)
+    assertEquals(CREATED, resultStatus.statusCode)
     val response = resultStatus.body
     assertNotNull(response)
   }

@@ -1,54 +1,46 @@
 package no.hamre.booklist.app
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.info.Info
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.servers.Server
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 
 @SpringBootApplication
-@EnableWebSecurity
-class AppApplication : SpringBootServletInitializer() {
-}
-    fun main(args: Array<String>) {
-        runApplication<AppApplication>(*args)
-    }
+@OpenAPIDefinition(
+    info = Info(title = "Open API 3.0 example app."),
+    servers = [
+      Server(url = "http://localhost:8080/", description = "base url", )
+    ],
+    security = [
+      SecurityRequirement(name = "basicAuth"),
+      SecurityRequirement(name = "bearerToken")
+    ]
+)
 
-    val log = LoggerFactory.getLogger(AppApplication::class.java)
-
-//@Configuration
-/*
-open class JerseyConfig() : ResourceConfig() {
-    init {
-        log.info("Register Controllers")
-        register(BookController::class.java)
-    }
+class AppApplication() {
 }
-*/
+
+fun main(args: Array<String>) {
+  runApplication<AppApplication>(*args)
+}
 
 @Configuration
 class ObjectMapperFactoryBean {
 
-    @Bean
-    @Primary
-    fun springObjectMapperConfiguration(): ObjectMapper {
-        log.info("Configure Spring's ObjectMapper")
-        return ObjectMapperFactory.create()
-    }
+  @Bean
+  @Primary
+  fun springObjectMapperConfiguration(): ObjectMapper {
+    print("Configure Spring's ObjectMapper")
+    return ObjectMapperFactory.create()
+  }
 }
 /*
 @EnableWebSecurity
@@ -110,22 +102,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 }
 */
 
-/*
-
-@Configuration
-@EnableWebSecurity
-open class SecurityConfiguration : WebSecurityConfigurerAdapter() {
-
-    override fun configure(http: HttpSecurity) {
-        //http.authorizeRequests().anyRequest().authenticated().and().httpBasic()
-        http.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .anyRequest().authenticated()
-				.antMatchers("/api/v1/books").permortMapper()
-        super.configure(http)
-    }
-}
-*/
 
 /*
 @Configuration
