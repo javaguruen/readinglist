@@ -1,6 +1,8 @@
 package no.hamre.booklist.app.service
 
+import no.hamre.booklist.app.dao.AuthorDao
 import no.hamre.booklist.app.dao.BookDao
+import no.hamre.booklist.app.model.Author
 import no.hamre.booklist.app.model.Book
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,12 +18,26 @@ interface BookService {
 
 @Service
 @Transactional
-class BookServiceImpl @Autowired constructor(val dao: BookDao)
+class BookServiceImpl @Autowired constructor(val dao: BookDao, val authorDao: AuthorDao)
   : BookService {
 
   override
   fun addBook(book: Book): Book {
-    return dao.insert(book)
+    //Add or instert authors
+    val persistedAuthors = book.authors.map { author -> map2managedAuthors(author) }.toSet()
+    return dao.insert(book.copy(authors = persistedAuthors))
+  }
+
+  private fun map2managedAuthors(author: Author): Author {
+    var persistedAuthor: Author? = null
+    if (author.id != null) authorDao.findAuthorById(id = author.id)
+    if (persistedAuthor == null) {
+      persistedAuthor = authorDao.findAuthorByName(author.firstName, author.lastName)
+    }
+    if (persistedAuthor == null){
+      persistedAuthor = authorDao.insertAuthor(author)
+    }
+    return persistedAuthor
   }
 
   override fun addRawBookInfo(info: String): Long {
