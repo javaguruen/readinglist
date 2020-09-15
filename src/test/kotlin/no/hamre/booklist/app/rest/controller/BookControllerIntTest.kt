@@ -75,7 +75,7 @@ class BookControllerIntTest {
   fun `Add new book 2`() {
     val requestBook = Book(
         authors = listOf(
-            Author(id=1, firstName = "Stephen", lastName = "King"),
+            Author(id = 1, firstName = "Stephen", lastName = "King"),
             Author(firstName = "Mrs.", lastName = "King"),
             Author(firstName = "Doesn't", lastName = "Exists")
         ),
@@ -85,7 +85,7 @@ class BookControllerIntTest {
         link = "https://www.amazon.com/Carrie-Stephen-King/dp/0307743667",
         medium = Medium.PAPIR,
         readingOrder = 0,
-        tags = setOf()
+        tags = setOf(Tag(name = TagName("NEW_TAG")), Tag(TagName("BOUGHT")))
     )
 
     val resultStatus = testRestTemplate
@@ -100,7 +100,8 @@ class BookControllerIntTest {
     val bookString = resultStatus.body
     val book = ObjectMapperFactory.create().readValue(bookString, Book::class.java)
     assertNotNull(book)
-    assertEquals(3, book?.authors?.size, "Should have one author")
+    assertEquals(3, book?.authors?.size, "Should have three author")
+    assertEquals(2, book?.tags?.size, "Should have two tags")
   }
 
   @Test

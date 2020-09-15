@@ -2,8 +2,10 @@ package no.hamre.booklist.app.service
 
 import no.hamre.booklist.app.dao.AuthorDao
 import no.hamre.booklist.app.dao.BookDao
+import no.hamre.booklist.app.dao.TagRepository
 import no.hamre.booklist.app.model.Author
 import no.hamre.booklist.app.model.Book
+import no.hamre.booklist.app.model.Tag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,14 +20,28 @@ interface BookService {
 
 @Service
 @Transactional
-class BookServiceImpl @Autowired constructor(val dao: BookDao, val authorDao: AuthorDao)
+class BookServiceImpl @Autowired constructor(
+    val dao: BookDao,
+    val authorDao: AuthorDao,
+    val tagRepository: TagRepository)
   : BookService {
 
   override
   fun addBook(book: Book): Book {
     //Add or instert authors
     val persistedAuthors = book.authors.map { author -> map2managedAuthors(author) }.toSet()
-    return dao.insert(book.copy(authors = persistedAuthors))
+    val persistedTags = book.tags.map { tag -> map2managedTags(tag) }.toSet()
+    return dao.insert(book.copy(
+        authors = persistedAuthors,
+    tags = persistedTags))
+  }
+
+  private fun map2managedTags(tag: Tag): Tag {
+    var persistedTag: Tag? = tagRepository.findById(tag.name).orElse(null)
+    if (persistedTag == null) {
+      persistedTag = tagRepository.save(tag)
+    }
+    return persistedTag
   }
 
   private fun map2managedAuthors(author: Author): Author {
@@ -34,7 +50,7 @@ class BookServiceImpl @Autowired constructor(val dao: BookDao, val authorDao: Au
     if (persistedAuthor == null) {
       persistedAuthor = authorDao.findAuthorByName(author.firstName, author.lastName)
     }
-    if (persistedAuthor == null){
+    if (persistedAuthor == null) {
       persistedAuthor = authorDao.insertAuthor(author)
     }
     return persistedAuthor
