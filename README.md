@@ -13,11 +13,12 @@ https://github.com/brightzheng100/springboot-jersey-swagger
 https://reflectoring.io/spring-boot-data-jpa-test/
 
 
-Swagger.ui: 
-http://localhost:8080/
+Redoc
+http://localhost:8080/redoc.html
 
-swagger.json:
-http://localhost:8080/api/swagger.json
+openapi.json:
+http://localhost:8080/v3/api-docs
+
 
 
 ## Run locally

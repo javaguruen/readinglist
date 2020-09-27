@@ -20,7 +20,7 @@ interface BookService {
 
 @Service
 @Transactional
-class BookServiceImpl @Autowired constructor(
+class BookServiceImpl (
     val dao: BookDao,
     val authorDao: AuthorDao,
     val tagRepository: TagRepository)

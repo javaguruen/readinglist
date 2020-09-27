@@ -1,5 +1,6 @@
 package no.hamre.booklist.app.rest.api
 
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
 data class Book(
@@ -21,6 +22,7 @@ enum class Status {
   ON_LIST, WONT_READ
 }
 
+@Schema(name = "Author")
 data class Author(val id: Long? = null, val firstName: String, val lastName: String)
 
 data class Tag(val name: TagName, val tagged: LocalDateTime = LocalDateTime.now())

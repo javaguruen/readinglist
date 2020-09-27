@@ -24,18 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 import javax.validation.Valid
-import javax.validation.constraints.NotEmpty
 
 @RequestMapping(path = ["/api/v1/books"], produces = [APPLICATION_JSON_VALUE])
 @RestController
 class BookController @Autowired constructor(val bookService: BookService) {
   private val baseUrl = "http://localhost:8080/api/v1/books"
-
-/*
-  @POST
-  @Path("/raw")
-  @Produces(TEXT_PLAIN)
-*/
 
   @RequestMapping(path = ["/raw"], method = [POST], consumes = [TEXT_PLAIN_VALUE], produces = [TEXT_PLAIN_VALUE])
   @Operation(
@@ -52,7 +45,7 @@ class BookController @Autowired constructor(val bookService: BookService) {
     val newId: Long = bookService.addRawBookInfo(body!!)
     return created(URI("$baseUrl/raw/$newId"))
         .contentType(TEXT_PLAIN)
-        .body(newId as kotlin.Long)
+        .body(newId)
   }
 
   @RequestMapping(method = [POST])
