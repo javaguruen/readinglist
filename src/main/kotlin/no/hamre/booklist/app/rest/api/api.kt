@@ -22,7 +22,7 @@ enum class Status {
   ON_LIST, WONT_READ
 }
 
-@Schema(name = "Author")
+@Schema(name = "Author", description = "An author")
 data class Author(val id: Long? = null, val firstName: String, val lastName: String)
 
 data class Tag(val name: TagName, val tagged: LocalDateTime = LocalDateTime.now())

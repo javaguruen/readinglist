@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Primary
 
 @SpringBootApplication
 @OpenAPIDefinition(
-    info = Info(title = "Open API 3.0 example app."),
+    info = Info(title = "Open API 3.0 example app.", version = "1.0.0"),
     servers = [
       Server(url = "http://localhost:8080/", description = "base url", )
     ],
