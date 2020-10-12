@@ -4,41 +4,30 @@ import no.hamre.booklist.app.ObjectMapperFactory
 import no.hamre.booklist.app.rest.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.OK
-import org.springframework.http.RequestEntity
-import org.springframework.test.context.junit4.SpringRunner
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BookControllerIntTest {
-  val username = "user"
-  val pwd = "pwd"
-
+class AuthorControllerIntTest {
   @Autowired
   lateinit var testRestTemplate: TestRestTemplate
 
-
   @Test
-  fun `Get all books`() {
-    val result = testRestTemplate
-        .withBasicAuth(username, pwd)
-        .getForEntity("/api/v1/books/", Array<Book>::class.java)
-    log.info("Got: $result")
+  fun `Get all authors`() {
+    val result = testRestTemplate.getForEntity("/api/v1/authors/", Array<Author>::class.java)
     assertEquals(OK, result.statusCode)
     assertNotNull(result)
     assertEquals(OK, result.statusCode)
-    val books = result.body
-    assertEquals(2, books?.size)
-    assertEquals("The Shining", books?.first()?.originalTitle)
-    books?.forEach { println(it) }
+    val authors = result.body
+    assertEquals(2, authors?.size)
+    assertEquals("Stephen", authors?.firstOrNull()?.firstName)
+    assertEquals("Stephen", authors?.firstOrNull()?.lastName)
+    authors?.forEach { println(it) }
   }
 
   @Test
@@ -56,10 +45,9 @@ class BookControllerIntTest {
     )
 
     val resultStatus = testRestTemplate
-        .withBasicAuth(username, pwd)
-        .exchange("/api/v1/books/",
-            HttpMethod.POST,
-            HttpEntity(requestBook),
+        .postForEntity(
+            "/api/v1/books",
+            requestBook,
             String::class.java
             //Book::class.java
         )
@@ -99,7 +87,6 @@ class BookControllerIntTest {
     )
 
     val resultStatus = testRestTemplate
-        .withBasicAuth(username, pwd)
         .postForEntity(
             "/api/v1/books",
             requestBook,
@@ -118,7 +105,6 @@ class BookControllerIntTest {
   @Test
   fun `Add raw information about a book`() {
     val resultStatus = testRestTemplate
-        .withBasicAuth(username, pwd)
         .postForEntity(
             "/api/v1/books/raw",
             "A raw string",
@@ -128,9 +114,5 @@ class BookControllerIntTest {
     assertEquals(CREATED, resultStatus.statusCode)
     val response = resultStatus.body
     assertNotNull(response)
-  }
-
-  companion object {
-    val log = LoggerFactory.getLogger(BookControllerIntTest::class.java)
   }
 }

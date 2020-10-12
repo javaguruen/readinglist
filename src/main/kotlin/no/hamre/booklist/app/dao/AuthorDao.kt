@@ -10,6 +10,7 @@ interface AuthorDao {
   fun insertAuthor(author: Author): Author
   fun findAuthorById(id: Long): Author
   fun findAuthorByName(firstName: String, lastName: String): Author?
+  fun allAuthors(): List<Author>
 }
 
 @Repository
@@ -31,6 +32,10 @@ class AuthorDaoImpl(private val authorRepository: AuthorRepository) : AuthorDao 
       LOG.info("Found Author with id: ${author.id} first name: $firstName and last name $lastName")
     }
     return author
+  }
+
+  override fun allAuthors(): List<Author> {
+    return authorRepository.findAll().toList()
   }
 
   companion object {

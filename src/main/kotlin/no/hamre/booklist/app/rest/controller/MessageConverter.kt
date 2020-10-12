@@ -22,6 +22,7 @@ class MessageConverter : WebMvcConfigurer {
     converters.add(Long2String(name = "first", supportedClass = java.lang.Long::class.java))
   }
 }
+
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 class Long2String(val name: String, val supportedClass: Class<java.lang.Long>) : AbstractHttpMessageConverter<java.lang.Long>(TEXT_PLAIN) {
 

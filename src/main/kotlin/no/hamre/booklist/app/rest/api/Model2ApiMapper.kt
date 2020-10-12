@@ -32,6 +32,10 @@ object Model2ApiMapper {
     return tags.map { t -> Tag(TagName(name = t.name)) }.toSet()
   }
 
+  fun mapAuthors(authors: List<no.hamre.booklist.app.model.Author>): List<Author> {
+    return authors.map { mapAuthor(it) }
+  }
+
   fun mapAuthor(author: no.hamre.booklist.app.model.Author): Author {
     return Author(id = author.id,
         firstName = author.firstName,
