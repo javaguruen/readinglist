@@ -1,5 +1,7 @@
 package no.hamre.booklist.app.rest.controller
 
+import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.tags.Tags
 import no.hamre.booklist.app.rest.api.Api2ModelMapper
 import no.hamre.booklist.app.rest.api.Book
 import no.hamre.booklist.app.rest.api.Model2ApiMapper
@@ -31,6 +33,10 @@ class BookControllerImpl @Autowired constructor(val bookService: BookService) : 
     val modelBook = bookService.addBook(Api2ModelMapper.mapBook(book))
     return ResponseEntity.created(URI("$baseUrl/"))
         .body(Model2ApiMapper.mapBook(modelBook))
+  }
+
+  override fun updateBook(id: Long, book: Book): ResponseEntity<Book> {
+    TODO("Not yet implemented")
   }
 
   override fun listBooks(): ResponseEntity<Array<Book>> {

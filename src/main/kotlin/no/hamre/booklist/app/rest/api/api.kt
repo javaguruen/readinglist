@@ -32,3 +32,4 @@ data class User(
     val id: Long?,
     val email: String
 )
+data class ErrorResponse(val message: String)

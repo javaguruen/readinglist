@@ -27,3 +27,22 @@ http://localhost:8080/v3/api-docs
 
 ### Java -jar
 ` java  -jar target/readinglist-0.0.1-SNAPSHOT.jar --spring.profiles.active=production`
+
+
+### Schenarier
+* Kopiere ren tekst eller lenke og sende inn
+    `POST /books/raw`
+* Sende inn bok-objekt
+    `POST /books`
+   1. Hvis forfatter ikke finnes, opprett
+   1. Hvis bok ikke finnes, opprett
+   1. Hvis tags ikke finnes, opprett tag
+* Opprett forfatter
+* Slå sammen duplikate forfattere
+* Slå sammen duplikate bøker
+* Endre bok (ikke tagger)
+    `PUT /books`
+* Legg til tagger
+* Ta vekk tagger
+
+    

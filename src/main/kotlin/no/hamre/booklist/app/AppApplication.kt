@@ -25,8 +25,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager
       Server(url = "http://localhost:8080/", description = "base url")
     ],
     security = [
-      SecurityRequirement(name = "basicAuth"),
-      SecurityRequirement(name = "bearerToken")
+      SecurityRequirement(name = "bearerToken", scopes = ["book.write", "book.read"])
     ]
 )
 @SpringBootApplication

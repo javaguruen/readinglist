@@ -20,6 +20,7 @@
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <kotlin.version>1.4.10</kotlin.version>
         <maven-surefire.version>2.22.2</maven-surefire.version>
+        <openapi-diff-version>2.0.0-beta.6</openapi-diff-version>
         <springdoc.version>1.4.8</springdoc.version>
     </properties>
 
@@ -62,6 +63,11 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-security</artifactId>
             <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools.openapidiff</groupId>
+            <artifactId>openapi-diff-core</artifactId>
+            <version>${openapi-diff-version}</version>
         </dependency>
 
         <dependency>
